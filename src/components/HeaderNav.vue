@@ -1,0 +1,45 @@
+<template>
+    <div>
+        <div class="headernav">
+            <span class="iconfont icon-list"></span>
+            <router-link class="nav" to="/my">我的</router-link>
+            <router-link class="nav" to="/discover">发现</router-link>
+            <router-link class="nav" to="/cloudhome">云村</router-link>
+            <router-link class="nav" to="/video">视频</router-link>
+            <span class="iconfont icon-fangdajing"></span>
+        </div>
+        <router-view></router-view>
+    </div>
+    
+</template>
+
+<script>
+export default {
+};
+</script>
+
+<style scoped>
+@import url("http://at.alicdn.com/t/font_1324779_by9ogjjalir.css");
+.headernav {
+    display:flex;
+    height: 1.851852rem;
+    align-items: center;
+    /* padding: 0 0.388889rem; */
+    justify-content: space-between;
+
+}
+.nav {
+    text-decoration: none;
+    color:#7b7b7b;
+    font-size: .407407rem;
+}
+.iconfont {
+    font-size: .37037rem;
+    color:#303030;
+}
+.router-link-active {
+    font-size: .425926rem;
+    color: #353535;
+    font-weight: bold;
+}
+</style>
