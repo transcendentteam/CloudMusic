@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- 头部导航栏 -->
         <div class="headernav">
             <span class="iconfont icon-list"></span>
             <router-link class="nav" to="/my">我的</router-link>
@@ -36,6 +37,7 @@ export default {
 .iconfont {
     font-size: .37037rem;
     color:#303030;
+    font-weight: bold;
 }
 .router-link-active {
     font-size: .425926rem;

@@ -1,11 +1,29 @@
 <template>
     <div>
-        <h1>我是发现页</h1>
+        <Carousel />
     </div>
 </template>
 
 <script>
+import Carousel from "@/components/Carousel.vue"
 export default {
+    data() {
+      return {
+        
+      }
+    },
+    computed: {
+      
+    },
+    mounted() {
+        
+    },
+    methods: {
+        
+    },
+    components:{
+        Carousel
+    }
 };
 </script>
 

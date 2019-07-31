@@ -9,6 +9,7 @@ import Dynamic from "./pages/Dynamic";
 
 const router = new VueRouter({
     routes:[
+        {path:"/",redirect:'/discover'},
         { path:"/my",component:My},
         { path:"/discover",component:Discover},
         { path:"/cloudhome",component:CloudHome,
