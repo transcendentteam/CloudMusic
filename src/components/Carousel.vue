@@ -63,6 +63,7 @@ export default {
 <style scoped>
 .carousel {
     padding: 0 0.388889rem;
+    margin-top: 1.851852rem;
 }
 .swiper-slide {
     height: 3.425926rem;
@@ -81,7 +82,7 @@ export default {
     position:absolute;
     right: 0;
     bottom: 0;
-    width: 1.388889remy;
+    width: 1.388889rem;
     height: .611111rem;
     border-radius: 0.277778rem 0 0 0;
     text-align: center;
