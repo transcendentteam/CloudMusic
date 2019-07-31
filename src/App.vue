@@ -1,18 +1,21 @@
 <template>
   <div id="app">
-    <HeaderNav />
+    <Index />
   </div>
 </template>
 
 <script>
 import flexble from "./flexble";
 
-import HeaderNav from "./components/HeaderNav.vue"
+import Index from "./pages/Index.vue"
 export default {
   name: 'app',
   components: {
-    HeaderNav
-  }
+    Index
+  },
+  mounted() {
+    
+  },
 }
 </script>
 

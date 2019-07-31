@@ -7,7 +7,8 @@ const store = new Vuex.Store({
         banners:[],
         reclists:[],
         cds:[],
-        mvs:[]
+        mvs:[],
+        dailysongs:[],
     },
     mutations:{
         getbanner(state,banner){
@@ -58,9 +59,23 @@ const store = new Vuex.Store({
                 state.mvs.push(mv[arr[i]]);
             }
             // console.log(state.mvs);
-        }
+        },
+        getdailysongs(state,recommend){
+            state.dailysongs=recommend;
+        },
+        
     },
     actions:{
+        getdailysongs(store){
+            Vue.axios({url:"http://localhost:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
+            .then(res =>{
+                Vue.axios({url:"http://localhost:3000/recommend/songs",withCredentials:true})
+                .then(res =>{
+                    console.log(res.data.recommend);
+                    store.commit("getdailysongs",res.data.recommend)
+                })
+            })
+        },
         getbanner(store){
             Vue.axios.get("http://localhost:3000/banner?type=1")
             .then(res =>{
@@ -88,12 +103,12 @@ const store = new Vuex.Store({
                 // console.log(res.data.data);
                 store.commit("getrecmv",res.data.data)
             })
-        }
+        },
 
        
     },
     getters:{
-
+        
     }
 })
 

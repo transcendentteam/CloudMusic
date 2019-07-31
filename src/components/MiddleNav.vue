@@ -1,6 +1,9 @@
 <template>
     <div>
         <div class="middlenav">
+            <!-- <div class="nav" @click="recommend">
+                <div class="iconfont icon-rili"></div><span>每日推荐</span>
+            </div> -->
             <router-link class="nav" to="/discover/recommend">
                 <div class="iconfont icon-rili"></div><span>每日推荐</span>
             </router-link>
@@ -26,6 +29,12 @@
 
 <script>
 export default {
+    methods: {
+        //push方法
+        // recommend(){
+        //     this.$router.push({path:"/discover/recommend"})
+        // }
+    },
 };
 </script>
 

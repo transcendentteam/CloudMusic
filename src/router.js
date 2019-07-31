@@ -2,6 +2,7 @@ import VueRouter  from "vue-router"
 
 import My from "./pages/My.vue";
 import Discover from "./pages/Discover.vue";
+import Recommend from "./pages/Recommend.vue";
 import CloudHome from "./pages/CloudHome.vue";
 import Video from "./pages/Video.vue";
 import Square from "./pages/Square";
@@ -21,7 +22,7 @@ const router = new VueRouter({
     
         },
         { path:"/video",component:Video},
-        
+        {path:"/discover/recommend",component:Recommend}
     ]
 })
 
