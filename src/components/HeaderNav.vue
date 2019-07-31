@@ -40,11 +40,18 @@ export default {
     text-decoration: none;
     color:#7b7b7b;
     font-size: .407407rem;
+    display: inline-block;
+    line-height: 1
 }
 .iconfont {
+    display: inline-block;
     font-size: .37037rem;
     color:#303030;
     font-weight: bold;
+}
+.iconfont::before {
+    display: inline-block;
+    line-height: 1;
 }
 .router-link-active {
     font-size: .425926rem;
