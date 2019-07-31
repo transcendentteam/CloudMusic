@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="carousel">
         <swiper :options="swiperOption" ref="mySwiper" @slideChangeTransitionEnd="slideChangeEnd">
             <!-- slides --> 
             <div class="swiper-slide banner" v-for="banner in banners" :key="banner.bannerId">
@@ -61,11 +61,15 @@ export default {
 </script>
 
 <style scoped>
+.carousel {
+    padding: 0 0.388889rem;
+}
 .swiper-slide {
     height: 3.425926rem;
     background: #ccc;
 }
 .banner {
+    width: 100%;
     border-radius: 0.277778rem;
     overflow: hidden;
 }

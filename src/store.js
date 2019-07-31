@@ -4,11 +4,22 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state:{
-        banners:[]
+        banners:[],
+        reclists:[]
     },
     mutations:{
         getbanner(state,banner){
             state.banners=banner;
+        },
+        getreclist(state,reclist){
+            var arr=[];
+            while(arr.length<10){
+               let random = parseInt(Math.random()*(29-0+1));
+               arr.push(random)
+            }
+            for(var i=0;i<arr.length;i++){
+                state.reclists.push(reclist[arr[i]]);
+            }
         }
     },
     actions:{
@@ -17,6 +28,13 @@ const store = new Vuex.Store({
             .then(res =>{
                 console.log(res.data.banners);
                 store.commit("getbanner",res.data.banners)
+            })
+        },
+        getreclist(store){
+            Vue.axios.get("http://localhost:3000/personalized")
+            .then(res =>{
+                console.log(res.data.result);
+                store.commit("getreclist",res.data.result)
             })
         }
        

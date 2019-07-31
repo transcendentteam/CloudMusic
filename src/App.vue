@@ -17,8 +17,8 @@ export default {
 </script>
 
 <style>
-html,body {
+html,body,h1,h2,h3 {
   margin: 0;
-  padding: 0 0.388889rem;
+  padding: 0;
 }
 </style>
