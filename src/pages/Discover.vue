@@ -3,6 +3,9 @@
         <Carousel />
         <MiddleNav />
         <RecList />
+        <Newcd />
+        <RecMv />
+
     </div>
 </template>
 
@@ -10,6 +13,8 @@
 import Carousel from "@/components/Carousel.vue"
 import MiddleNav from "@/components/MiddleNav.vue"
 import RecList from "@/components/RecList.vue"
+import Newcd from "@/components/Newcd.vue"
+import RecMv from "@/components/RecMv.vue"
 export default {
     data() {
       return {
@@ -28,7 +33,9 @@ export default {
     components:{
         Carousel,
         MiddleNav,
-        RecList
+        RecList,
+        Newcd,
+        RecMv
     }
 };
 </script>

@@ -1,14 +1,13 @@
 <template>
-    <div class="reclist">
-        <h1 class="title">推荐歌单<span>歌单广场</span></h1>
+    <div class="recmv">
+        <h1 class="title">推荐MV<span>MV广场</span></h1>
 
-        <ul class="list-show">
-            <li class="list-show-item" v-for="re in reclists" :key="re.id">
+        <ul class="mv-show">
+            <li class="mv-show-item" v-for="mv in mvs" :key="mv.id">
                 <div class="img">
-                    <img :src=re.picUrl>
-                    <div class="playcount"><span class="iconfont icon-sanjiaoxings"></span>{{parseInt(re.playCount/10000)}}万</div>
+                    <img :src=mv.cover>
                 </div>
-                <p>{{re.name}}</p>
+                <p>{{mv.name}}</p>
                 
             </li>
         </ul>
@@ -20,13 +19,13 @@
 import {mapActions,mapState} from "vuex"
 export default {
     methods: {
-        ...mapActions(["getreclist"])
+        ...mapActions(["getrecmv"])
     },
     mounted() {
-        this.getreclist();
+        this.getrecmv();
     },
     computed: {
-        ...mapState(["reclists"])
+        ...mapState(["mvs"])
     },
 };
 </script>
@@ -37,7 +36,7 @@ ul {
     margin: 0;
     padding: 0;
 }
-.reclist {
+.recmv {
     padding: 0 0.388889rem;
 }
 .title {
@@ -59,21 +58,21 @@ ul {
     float:right
     
 }
-.list-show {
+.mv-show {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
-.list-show-item {
+.mv-show-item {
     width: 2.851852rem;
     margin-bottom: .611111rem;
     
 }
-.list-show-item img{
+.mv-show-item img{
     width: 100%;
     vertical-align: top;
 }
-.list-show-item .img {
+.mv-show-item .img {
     position: relative;
     border-radius: .092593rem;
     overflow: hidden;
@@ -91,7 +90,7 @@ ul {
     margin-right: .055556rem;
     font-size: .222222rem;
 }
-.list-show-item>p {
+.mv-show-item>p {
     margin: 0.259259rem 0 0 0;
     overflow: hidden;
     text-overflow: ellipsis;
