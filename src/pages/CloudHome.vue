@@ -24,6 +24,7 @@ export default {
     .subnav{
         display: flex;
         justify-content: center;
+        border-bottom: 1px solid #e7e7e7;
     }
     .subnav a{
         font: 700 .361111rem/1px "";
@@ -36,6 +37,6 @@ export default {
     }
     .subnav .router-link-active{
         color: #ff3839;
-        border-bottom:5px solid #ff3839;
+        border-bottom:3px solid #ff3839;
     }
 </style>
