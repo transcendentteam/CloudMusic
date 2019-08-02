@@ -83,7 +83,7 @@ const store = new Vuex.Store({
         getdailysongs(state,recommend){
             state.dailysongs=recommend;
         },
-        play(state,song){
+        add(state,song){
             // state.animationShow="running"
             console.log(song);
             //设置一个Bool,循环遍历play数组，如果过找到了与添加歌曲Id相同的歌曲，就不加入播放列表数组，即play

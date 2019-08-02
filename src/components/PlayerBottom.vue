@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="playbottom">
-            <div class="cover" :style="{'animation-play-state':animationShow}"><img :src=playnow.album.blurPicUrl></div>
+            <div class="cover" :style="{'animation-play-state':animationShow}" @click="pageplay"><img :src=playnow.album.blurPicUrl></div>
             <div class="name">
                 <h2>{{playnow.name}}</h2>
                 <p>横滑可以切换上下首哦</p>
@@ -62,6 +62,9 @@ export default {
                 })
             }
             
+        },
+        pageplay(){
+            this.$router.push({path:"/play"})
         }
     },
     computed:{

@@ -9,6 +9,8 @@ import Video from "./pages/Video.vue";
 import Square from "./pages/Square";
 import Dynamic from "./pages/Dynamic";
 
+import Play from "./pages/Play.vue";
+
 const router = new VueRouter({
     routes:[
         {path:"/",redirect:'/discover'},
@@ -24,7 +26,8 @@ const router = new VueRouter({
     
         },
         { path:"/video",component:Video},
-        {path:"/discover/recommend",component:Recommend}
+        {path:"/discover/recommend",component:Recommend},
+        {path:"/play",component:Play}
     ]
 })
 
