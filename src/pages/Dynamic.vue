@@ -25,7 +25,7 @@
                 </ul>
                 <footer>
                     <div>
-                        <span><i class="iconfont icon-xunhuan"></i>{{m.type}}</span>
+                        <span><i class="iconfont icon-xunhuan"></i>{{m.info.commentCount}}</span>
                         <span><i class="iconfont icon-xiaoxi"></i>{{m.insiteForwardCount}}</span>
                         <span><i class="iconfont icon-zan"></i>{{m.info.likedCount}}</span>
                     </div>
@@ -54,7 +54,7 @@ export default {
                     for(var i=0;i<arr.length;i++){
                         // console.log(arr[i].rcmdInfo)
                         if(arr[i].rcmdInfo!=null){
-                            console.log(arr[i])
+                            // console.log(arr[i])
                             this.dynamic.push(arr[i])
                         }
                     }
@@ -152,6 +152,7 @@ export default {
     .dynamic .img>ul li img{
         width: 100%;
         height:100%;
+        border-radius: 6px;
     }
     .dynamic .img footer{
         display: flex;
