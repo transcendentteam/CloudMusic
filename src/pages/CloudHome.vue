@@ -25,6 +25,7 @@ export default {
         display: flex;
         justify-content: center;
         border-bottom: 1px solid #e7e7e7;
+        margin-top: 1.851852rem;
     }
     .subnav a{
         font: 700 .361111rem/1px "";

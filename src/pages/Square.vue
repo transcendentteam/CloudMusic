@@ -24,7 +24,7 @@ export default {
     },
     mounted() {
         this.axios.get("http://localhost:3000/top/playlist?limit=10&order=new").then((response) => {
-            console.log(response.data.playlists)
+            // console.log(response.data.playlists)
             this.playlists=response.data.playlists;
         })
     },
