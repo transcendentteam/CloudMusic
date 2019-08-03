@@ -39,4 +39,8 @@ html,body,h1,h2,h3 {
 .swiper-pagination-bullet-active {
   background: #ff494b !important;
 }
+
+.pulldown-wrapper {
+    z-index: -1 !important;
+}
 </style>

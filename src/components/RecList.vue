@@ -1,12 +1,12 @@
 <template>
     <div class="reclist">
-        <h1 class="title">推荐歌单<span>歌单广场</span></h1>
+        <h1 class="title">推荐歌单<span @click="tolist">歌单广场</span></h1>
 
         <ul class="list-show">
-            <li class="list-show-item" v-for="re in reclists" :key="re.id">
+            <li class="list-show-item" v-for="re in reclists" :key="re.id" @click="listdetail(re.id);to()">
                 <div class="img">
                     <img :src=re.picUrl>
-                    <div class="playcount"><span class="iconfont icon-sanjiaoxings"></span>{{parseInt(re.playCount/10000)}}万</div>
+                    <div class="playcount"><span class="iconfont icon-sanjiaoxings"></span>{{re.playCount |  dataFormat}}</div>
                 </div>
                 <p>{{re.name}}</p>
                 
@@ -20,14 +20,31 @@
 import {mapActions,mapState} from "vuex"
 export default {
     methods: {
-        ...mapActions(["getreclist"])
+        ...mapActions(["getreclist","listdetail"]),
+        to(){
+            this.$router.push({path:'/discover/list/detail'})
+        },
+        tolist(){
+            this.$router.push({path:'/discover/list'})
+
+        }
     },
     mounted() {
         this.getreclist();
+        
     },
     computed: {
         ...mapState(["reclists"])
     },
+    filters:{
+        dataFormat(des){
+            if(des>10000){
+                return (des/10000).toFixed(1)+"万"
+            }else if(des>100000000){
+                return (des/100000000).toFixed(1)+"亿"
+            }
+        }
+    }
 };
 </script>
 
@@ -46,7 +63,7 @@ ul {
     font-size: .444444rem;
 }
 .title>span {
-    display: inline-block;
+    /* display: inline-block; */
     font-weight: normal;
     width: 1.851852rem;
     height: .62963rem;

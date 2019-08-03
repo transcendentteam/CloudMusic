@@ -10,7 +10,7 @@
                 <span :class=css @click="rotate();playaudio()"></span>
                 <el-button type="text" @click="centerDialogVisible = true" class="playlists iconfont icon-menu"></el-button>
             </div>
-            <audio :src=getmusicurl ref="myaudio"></audio>
+            <audio :src=getmusicurl ref="myaudio" @ended="end"></audio>
             
         </div>
         <el-dialog
@@ -24,8 +24,8 @@
                 <span></span>
                 <span slot="footer" class="dialog-footer">
                     <ul class="playlist">
-                        <li v-for="p,i in play" :key="p.id" @click="listplay(p)">
-                            <div class="song-info"><span class="iconfont icon-laba" v-if="false"></span><span class="song-name">{{p.name}}</span><span class="artists">-{{getplayartists[i].join("/")}}</span></div>
+                        <li v-for="p,i in play" :key="p.id" @click="listplay(p);bo();active(i)" >
+                            <div :class="resultNum === i?'active':'song-info'"><span class="iconfont icon-laba" v-if="resultNum === i?true:false"></span><span class="song-name">{{p.name}}</span><span class="artists">-{{getplayartists[i].join("/")}}</span></div>
                             <div class="manu"><span class="origin">播放来源</span><span class="iconfont icon-delete"></span></div>
                         </li>
                     </ul> 
@@ -41,30 +41,43 @@ export default {
     data() {
         return {
             // css:"playandpause iconfont icon-bofang",
-            centerDialogVisible: false
+            centerDialogVisible: false,
+            num:"",
         }
     },
     methods: {
         ...mapMutations(["playaudio","listplay"]),
         rotate(){
             // console.log(1);
+            let myaudio = this.$refs.myaudio.paused
             console.log(this.$store.state.animationShow)
-            if(this.$store.state.animationShow=="paused"){
-                this.$nextTick(() => {
-                    this.$refs.myaudio.play();
-                    this.$store.state.css="playandpause iconfont icon-zanting"
-                })
+            if(myaudio == true){
+                this.$refs.myaudio.play();
+                this.$store.state.css="playandpause iconfont icon-zanting"
                 
-            }else {
-                this.$nextTick(() => {
-                    this.$refs.myaudio.pause();
-                    this.$store.state.css="playandpause iconfont icon-bofang"
-                })
+            }else if(myaudio == false) {
+                this.$refs.myaudio.pause();
+                this.$store.state.css="playandpause iconfont icon-bofang"
             }
             
         },
+        bo(){
+            console.log(this.$refs.myaudio.paused)
+            this.$store.state.animationShow="running"
+            this.$refs.myaudio.play();
+            this.$store.state.css="playandpause iconfont icon-zanting"
+        },
         pageplay(){
             this.$router.push({path:"/play"})
+        },
+        end(){
+            console.log(1);
+            this.$store.state.animationShow="paused"
+            this.$refs.myaudio.pause();
+            this.$store.state.css="playandpause iconfont icon-bofang"
+        },
+        active(index){
+          this.num = index;
         }
     },
     computed:{
@@ -72,17 +85,21 @@ export default {
         ...mapGetters(["getmusicurl","getplayartists"]),
         count(){
             return this.$store.state.animationShow//返回store实例的count状态
+        },
+        resultNum(){
+          return this.num;
         }
     },
     mounted() {
         // console.log(this.$store.state.animationShow)
         // console.log(this.$store.state.css)
         
-        if(this.$store.state.animationShow=="running"){
+        if(this.$refs.myaudio.paused == false){
             this.$store.state.animationShow="paused"
             this.$refs.myaudio.pause();
             this.$store.state.css="playandpause iconfont icon-bofang"
         }
+        
     },
 };
 </script>
@@ -138,6 +155,9 @@ ul{
     font-size: .277778rem;
     color:#333232;
     margin-bottom: .046296rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .name p {
     margin:0;
@@ -178,6 +198,9 @@ ul{
     justify-content: space-between;
     align-items:center;
     margin-bottom: .907407rem;
+}
+.active {
+    color:red;
 }
 .song-info {
     display: flex;

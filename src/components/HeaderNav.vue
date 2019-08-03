@@ -9,7 +9,9 @@
             <router-link class="nav" to="/video">视频</router-link>
             <span class="iconfont icon-fangdajing"></span>
         </div>
-        <router-view></router-view>
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
     </div>
     
 </template>

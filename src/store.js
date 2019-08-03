@@ -24,11 +24,18 @@ const store = new Vuex.Store({
             "id": 34916664,
             "album":{"blurPicUrl": "http://p2.music.126.net/mmDtqraSkaf8YEx9BfkCdQ==/3355709488826555.jpg"},
             "name":"Time Zone",
-            "artists":[{"name":"周笔畅"},{"name":"Epik High"}]
+            "artists":[{"name":"周笔畅"},{"name":"Epik High"}],
+            "bMusic":{"playTime":283000}
             
         },
+        lists:[],
         animationShow:"paused",
         css: "playandpause iconfont icon-bofang",
+        listdetail:{},
+        listuser:{},
+        listsong:[],
+        isLoading:true
+
     },
     mutations:{
         getbanner(state,banner){
@@ -85,22 +92,21 @@ const store = new Vuex.Store({
         },
         add(state,song){
             // state.animationShow="running"
-            console.log(song);
+            // console.log(song);
             //设置一个Bool,循环遍历play数组，如果过找到了与添加歌曲Id相同的歌曲，就不加入播放列表数组，即play
             state.playnow={};
             state.playnow=song;
+            //查看添加的歌曲
+            console.log(song);
             let bool = true;
             for(var i=0;i<state.play.length;i++){
                 if((state.play)[i].id == song.id){
                     bool = false
                 }
-                
             }
             if(bool){
                 state.play.push(song);
             }
-            
-            // console.log(state.play);
         },
         playaudio(state){
             if(state.animationShow=="running"){
@@ -117,6 +123,19 @@ const store = new Vuex.Store({
             state.playnow=song;
             
         },
+        getlist(state,list){
+            state.lists=list;
+        },
+        listdetail(state,li){
+            state.listdetail=li;
+        },
+        getuser(state,user){
+            state.listuser=user
+        },
+        getlistsong(state,song){
+            state.isLoading = false;
+            state.listsong=song;
+        }
         
     },
     actions:{
@@ -127,6 +146,52 @@ const store = new Vuex.Store({
                 .then(res =>{
                     // console.log(res.data.recommend);
                     store.commit("getdailysongs",res.data.recommend)
+                })
+            })
+        },
+        getuser(store,id){
+            // console.log(id);
+            Vue.axios.get(`http://localhost:3000/user/detail?uid=${id}`)
+            .then(res =>{
+                // console.log(res.data.profile);
+                store.commit("getuser",res.data.profile)
+            })
+        },
+        getlist(store){
+            Vue.axios.get("http://localhost:3000/top/playlist")
+            .then(res =>{
+                // console.log(res.data.playlists);
+                store.commit("getlist",res.data.playlists)
+            })
+        },
+        listdetail(store,id){
+            Vue.axios.get(`http://localhost:3000/playlist/detail?id=${id}`)
+            .then(res =>{
+                // console.log(res.data.playlist);
+                store.commit("listdetail",res.data.playlist)
+
+                let sonIds = res.data.playlist.trackIds
+                let arr = []
+                for(var i in sonIds){
+                    arr.push(sonIds[i].id)
+                }
+                // console.log(arr);
+                let query = arr.join(",")
+                // console.log(query);
+                Vue.axios.get(`http://localhost:3000/song/detail?ids=${query}`)
+                .then(result => {
+                    // console.log(result.data.songs)
+                    //因为与每日推荐里面歌曲的数据属性名不同，所以可以通过以下方法修改对象的属性
+                    var bbb= JSON.parse(JSON.stringify(result.data.songs).replace(/al/g,"album")
+                    .replace(/picUrl/g,"blurPicUrl")
+                    .replace(/ar/g,"artists")
+                    .replace(/dt/g,"bMusic"));
+                    for(var i in bbb) {
+                        bbb[i].bMusic={"playTime":bbb[i].bMusic}
+                    }
+                    store.commit("getlistsong",bbb)
+                    
+
                 })
             })
         },

@@ -44,6 +44,7 @@ export default {
 }
 .el-dialog__footer {
     height: 5.555556rem;
+    overflow:scroll;
     text-align: right;
     padding: 0 !important;
     -webkit-box-sizing: border-box;

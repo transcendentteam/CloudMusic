@@ -10,6 +10,8 @@ import Square from "./pages/Square";
 import Dynamic from "./pages/Dynamic";
 
 import Play from "./pages/Play.vue";
+import List from "./pages/List.vue"
+import ListDetail from "./pages/ListDetail.vue"
 
 const router = new VueRouter({
     routes:[
@@ -27,6 +29,9 @@ const router = new VueRouter({
         },
         { path:"/video",component:Video},
         {path:"/discover/recommend",component:Recommend},
+        {path:"/discover/list",component:List},
+        {path:"/discover/list/detail",component:ListDetail},
+
         {path:"/play",component:Play}
     ]
 })
