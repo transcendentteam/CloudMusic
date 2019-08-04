@@ -45,9 +45,9 @@ export default {
     },
     mounted() {
         // getdailysongs(store){
-            this.axios({url:"http://localhost:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
+            this.axios({url:"http://120.27.243.6:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
            .then(res =>{
-                this.axios({url:"http://localhost:3000/event?pagesize=30&lasttime=1556740526369",withCredentials:true})
+                this.axios({url:"http://120.27.243.6:3000/event?pagesize=30&lasttime=1556740526369",withCredentials:true})
                 .then(res =>{
                     // console.log(res.data.event);
                     var arr=res.data.event;

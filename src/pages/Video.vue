@@ -30,7 +30,7 @@ export default {
         }
     },
     mounted() {
-        this.axios({url:"http://localhost:3000/video/group?id=9104",withCredentials:true})
+        this.axios({url:"http://120.27.243.6:3000/video/group?id=9104",withCredentials:true})
                 .then(res =>{
                     console.log(res.data.datas);
                     // var arr=res.data.event;

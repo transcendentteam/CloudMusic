@@ -140,9 +140,9 @@ const store = new Vuex.Store({
     },
     actions:{
         getdailysongs(store){
-            Vue.axios({url:"http://localhost:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
+            Vue.axios({url:"http://120.27.243.6:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
            .then(res =>{
-                Vue.axios({url:"http://localhost:3000/recommend/songs",withCredentials:true})
+                Vue.axios({url:"http://120.27.243.6:3000/recommend/songs",withCredentials:true})
                 .then(res =>{
                     // console.log(res.data.recommend);
                     store.commit("getdailysongs",res.data.recommend)
@@ -151,21 +151,21 @@ const store = new Vuex.Store({
         },
         getuser(store,id){
             // console.log(id);
-            Vue.axios.get(`http://localhost:3000/user/detail?uid=${id}`)
+            Vue.axios.get(`http://120.27.243.6:3000/user/detail?uid=${id}`)
             .then(res =>{
                 // console.log(res.data.profile);
                 store.commit("getuser",res.data.profile)
             })
         },
         getlist(store){
-            Vue.axios.get("http://localhost:3000/top/playlist")
+            Vue.axios.get("http://120.27.243.6:3000/top/playlist")
             .then(res =>{
                 // console.log(res.data.playlists);
                 store.commit("getlist",res.data.playlists)
             })
         },
         listdetail(store,id){
-            Vue.axios.get(`http://localhost:3000/playlist/detail?id=${id}`)
+            Vue.axios.get(`http://120.27.243.6:3000/playlist/detail?id=${id}`)
             .then(res =>{
                 // console.log(res.data.playlist);
                 store.commit("listdetail",res.data.playlist)
@@ -178,7 +178,7 @@ const store = new Vuex.Store({
                 // console.log(arr);
                 let query = arr.join(",")
                 // console.log(query);
-                Vue.axios.get(`http://localhost:3000/song/detail?ids=${query}`)
+                Vue.axios.get(`http://120.27.243.6:3000/song/detail?ids=${query}`)
                 .then(result => {
                     // console.log(result.data.songs)
                     //因为与每日推荐里面歌曲的数据属性名不同，所以可以通过以下方法修改对象的属性
@@ -196,28 +196,28 @@ const store = new Vuex.Store({
             })
         },
         getbanner(store){
-            Vue.axios.get("http://localhost:3000/banner?type=1")
+            Vue.axios.get("http://120.27.243.6:3000/banner?type=1")
             .then(res =>{
                 // console.log(res.data.banners);
                 store.commit("getbanner",res.data.banners)
             })
         },
         getreclist(store){
-            Vue.axios.get("http://localhost:3000/personalized")
+            Vue.axios.get("http://120.27.243.6:3000/personalized")
             .then(res =>{
                 // console.log(res.data.result);
                 store.commit("getreclist",res.data.result)
             })
         },
         getnewcd(store){
-            Vue.axios.get("http://localhost:3000/top/album?offset=0&limit=30")
+            Vue.axios.get("http://120.27.243.6:3000/top/album?offset=0&limit=30")
             .then(res =>{
                 // console.log(res.data.albums);
                 store.commit("getnewcd",res.data.albums)
             })
         },
         getrecmv(store){
-            Vue.axios.get("http://localhost:3000/mv/exclusive/rcmd")
+            Vue.axios.get("http://120.27.243.6:3000/mv/exclusive/rcmd")
             .then(res =>{
                 // console.log(res.data.data);
                 store.commit("getrecmv",res.data.data)
