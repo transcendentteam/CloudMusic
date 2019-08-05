@@ -38,7 +38,12 @@ export default {
                     
                     
                 })
+        // this.axios.get("http://120.27.243.6:3000/video/group?id=9104").then((res) => {
+        //     // console.log(response.data.playlists)
+        //     this.video=res.data.datas;
+        // })
     },
+    
 };
 </script>
 
