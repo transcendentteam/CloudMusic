@@ -1,36 +1,107 @@
 <template>
-    <div>
-        <div class="playbottom">
-            <div class="cover" :style="{'animation-play-state':animationShow}" @click="pageplay"><img :src=playnow.album.blurPicUrl></div>
+    <div class="player"  v-show="playlist.length>0">
+        <div class="normal" v-show="fullScreen">
+            <div class="play" 
+                :style="{background:'url('+playnow.album.blurPicUrl+') center top'}">
+            </div>
+
+            <div class="gai">
+                <!-- 头部 -->
+                <div class="title">
+                    <div class="left">
+                        <span class="iconfont icon-arrowleft" @click="back"></span>
+                        <div class="info">
+                            <h1>{{playnow.name}}</h1>
+                            <p>{{playnow.artists | atrFormat }}<span class="iconfont icon-iconfontyoujiantou-copy"></span></p>
+                        </div>
+                    </div>
+                    <span class="iconfont icon-fenxiang"></span>
+                </div>
+                <!-- 封面 -->
+                <div class="cover">
+                    <img :src="playnow.album.blurPicUrl">
+                </div>
+                <!-- 收藏评论 -->
+                <div class="manu">
+                    <span class="iconfont icon-xinaixinfuzhi"></span>
+                    <span class="iconfont icon-xiazai"></span>
+                    <span class="iconfont icon-jingyunyinxiaopt"></span>
+                    <span class="iconfont icon-xiaoxi"></span>
+                    <span class="iconfont icon-gengduosandian"></span>
+                </div>
+                <!-- 播放区 -->
+                <div class="bofang">
+                    <!-- 进度条 -->
+                    <div class="jdt">
+                        <span class="start">
+                        </span><div class="tiao"><span class="dian"></span>
+                        </div><span class="total"></span>
+                    </div>
+                    <!-- 播放暂停 -->
+                    <div class="bofangqu">
+                        <span class="iconfont icon-xunhuan1"></span>
+                        <span class="iconfont icon-shangyige"></span>
+                        <span :class="playIcon" @click="toggleplaying"></span>
+                        <span class="iconfont icon-xiayige"></span>
+                        <span class="iconfont icon-liebiao"></span>
+                    </div>
+                    <audio :src="getmusicurl" ref="au" loop></audio>
+                </div>
+            </div>
+        </div>
+        <div class="mini" v-show="!fullScreen">
+            <div class="cover" @click="normalShow">
+                 <img :src=playnow.album.blurPicUrl>
+                 </div>
             <div class="name">
                 <h2>{{playnow.name}}</h2>
                 <p>横滑可以切换上下首哦</p>
             </div>
             <div class="manu">
-                <span :class=css @click="rotate();playaudio()"></span>
-                <el-button type="text" @click="centerDialogVisible = true" class="playlists iconfont icon-menu"></el-button>
+                <span @click="toggleplaying" :class="playIcon"></span>
+                <el-button type="text" 
+                           @click="centerDialogVisible = true" 
+                           class="playlists iconfont icon-menu">
+                           </el-button>
             </div>
-            <audio :src=getmusicurl ref="myaudio" @ended="end"></audio>
-            
-        </div>
-        <el-dialog
+            <el-dialog
                 :visible.sync="centerDialogVisible"
                 width="30%"
                 center>
                 <div class="title">
-                    <div class="lef"><span class="iconfont icon-xunhuan1"></span><span class="xh">列表循环</span><span>({{play.length}})</span></div>
-                    <div class="right"><span class="el-icon-folder-add"></span><span class="coll">收藏全部</span><span class="el-icon-delete"></span></div>
+                    <div class="lef">
+                        <span class="iconfont icon-xunhuan1"></span>
+                        <span class="xh">列表循环</span>
+                        <span>({{playlist.length}})</span>
+                    </div>
+                    <div class="right">
+                        <span class="el-icon-folder-add"></span>
+                        <span class="coll">收藏全部</span>
+                        <span class="el-icon-delete"></span>
+                    </div>
                 </div>
                 <span></span>
                 <span slot="footer" class="dialog-footer">
                     <ul class="playlist">
-                        <li v-for="p,i in play" :key="p.id" @click="listplay(p);bo();active(i)" >
-                            <div :class="resultNum === i?'active':'song-info'"><span class="iconfont icon-laba" v-if="resultNum === i?true:false"></span><span class="song-name">{{p.name}}</span><span class="artists">-{{getplayartists[i].join("/")}}</span></div>
-                            <div class="manu"><span class="origin">播放来源</span><span class="iconfont icon-delete"></span></div>
+                        <li v-for="p,i in playlist" :key="p.id" 
+                            @click="listplay(p);active(i)" >
+                            <div :class="[ num == i ? 'active':'song-info']">
+                                <span class="iconfont icon-laba" v-if="[num == i ? true:false]"></span>
+                                <span class="song-name">{{p.name}}</span>
+                                <span class="artists">-{{getplayartists[i].join("/")}}</span>
+                            </div>
+                            <div class="manu">
+                                <span class="origin">播放来源</span>
+                                <span class="iconfont icon-delete"></span>
+                            </div>
                         </li>
                     </ul> 
                 </span>
-        </el-dialog>
+            </el-dialog>
+        </div>
+        
+        <audio :src=getmusicurl ref="audio"></audio>
+
     </div>
     
 </template>
@@ -40,67 +111,71 @@ import {mapState,mapGetters,mapMutations} from "vuex"
 export default {
     data() {
         return {
-            // css:"playandpause iconfont icon-bofang",
             centerDialogVisible: false,
-            num:"",
+            num:0
+        }
+    },
+    watch: {
+        getmusicurl(){
+            //加延时
+            this.$nextTick(() => {
+                this.$refs.audio.play()
+            })
+        },
+        //监听playing的变化
+        playing(newPlaying){
+            //加延时
+            this.$nextTick(() => {
+                const audio = this.$refs.audio
+                newPlaying?audio.play():audio.pause()
+            })
         }
     },
     methods: {
         ...mapMutations(["playaudio","listplay"]),
-        rotate(){
-            // console.log(1);
-            let myaudio = this.$refs.myaudio.paused
-            console.log(this.$store.state.animationShow)
-            if(myaudio == true){
-                this.$refs.myaudio.play();
-                this.$store.state.css="playandpause iconfont icon-zanting"
-                
-            }else if(myaudio == false) {
-                this.$refs.myaudio.pause();
-                this.$store.state.css="playandpause iconfont icon-bofang"
-            }
+        back(){
+            this.$store.state.fullScreen = false;
+        },
+        toggleplaying(){
+           console.log(this.$store.state.playing);
             
+           this.$store.state.playing = !this.$store.state.playing;
+           console.log(this.$store.state.playing);
         },
-        bo(){
-            console.log(this.$refs.myaudio.paused)
-            this.$store.state.animationShow="running"
-            this.$refs.myaudio.play();
-            this.$store.state.css="playandpause iconfont icon-zanting"
-        },
-        pageplay(){
-            this.$router.push({path:"/play"})
-        },
-        end(){
-            console.log(1);
-            this.$store.state.animationShow="paused"
-            this.$refs.myaudio.pause();
-            this.$store.state.css="playandpause iconfont icon-bofang"
+        normalShow(){
+            this.$store.state.fullScreen = true;
         },
         active(index){
-          this.num = index;
+            this.num = index;
         }
+        
     },
     computed:{
-        ...mapState(["play","playnow","animationShow","css"]),
+        ...mapState(["playlist","playnow","fullScreen","playing"]),
         ...mapGetters(["getmusicurl","getplayartists"]),
-        count(){
-            return this.$store.state.animationShow//返回store实例的count状态
-        },
-        resultNum(){
-          return this.num;
+        //根据playing的状态切换播放图标
+        playIcon(){
+            return this.$store.state.playing?'iconfont icon-zanting':'iconfont icon-bofang'
         }
     },
     mounted() {
-        // console.log(this.$store.state.animationShow)
-        // console.log(this.$store.state.css)
-        
-        if(this.$refs.myaudio.paused == false){
-            this.$store.state.animationShow="paused"
-            this.$refs.myaudio.pause();
-            this.$store.state.css="playandpause iconfont icon-bofang"
-        }
-        
     },
+    filters:{
+        atrFormat(des){
+            let arr=[]
+            for(var i in des){
+                arr.push(des[i].name)
+            }
+            let str = arr.join("/")
+            return str
+        },
+        format(des){
+            let h = parseInt(des/60);
+            let s = parseInt(des-h*60);
+
+            return h+":"+s
+        }
+    }
 };
 </script>
 
@@ -112,11 +187,129 @@ ul{
     padding: 10px;
     background: #fff;
 }
-.playbottom {
+.normal .play {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top:0;
+    z-index: 3000;
+    filter: blur(15px);
+}
+.normal .gai {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top:0;
+    left: 0;
+    z-index: 3001;
+    background: rgba(0, 0, 0, .8);
+    padding: 0 0.388889rem 0 0.5rem;
+    box-sizing: border-box;
+}
+.normal .title {
+    height: 1.481481rem;
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    color: #fff;
+}
+.normal .left{
+    display: flex;
+    align-items: center;
+
+}
+.normal .left .icon-arrowleft{
+    font-size: .592593rem;
+    margin-right: .5rem;
+}
+.normal .normal .left h1 {
+    font-size: .37037rem;
+}
+.normal .left p {
+    margin: 0;
+    color:#909090;
+    
+}
+.normal .icon-iconfontyoujiantou-copy {
+    font-size: 12px !important;
+}
+.normal .icon-fenxiang {
+    font-size: .5rem;
+}
+.normal .cover {
+    width: 6.518519rem;
+    height:6.518519rem;
+    border-radius: 50%;
+    overflow:hidden;
+    border: 0.138889rem solid #696a66;
+    margin: 2.092593rem auto 2.722222rem auto;
+}
+.normal .cover img {
+    width: 100%
+}
+.normal .manu {
+    font-size: .574074rem;
+    color: #c6c8c5;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: .759259rem;
+}
+.normal .start {
+    color: #bbbcba;
+}
+.normal .jdt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .759259rem;
+}
+.normal .tiao {
+    position: relative;
+    width: 7.203704rem;
+    height: 4px;
+    background: #696968;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+.normal .dian {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    top: -2px;
+}
+.normal .total {
+    color: #62605b;
+}
+.normal .bofangqu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.normal .icon-xunhuan1 {
+    font-size: .518519rem;
+    color: #d6d7d5;
+}
+.normal .icon-shangyige,.icon-xiayige {
+    font-size: .574074rem;
+    color: #d3d3d2;
+}
+.normal .icon-bofang,.icon-zanting {
+    font-size: 1.388889rem;
+    color:#fff;
+
+}
+.normal .icon-liebiao {
+    font-size:.537037rem;
+    color: #d5d4d3;
+}
+.mini {
     width: 100%;
     position: fixed;
     bottom: 0;
-    z-index:1000;
+    z-index:3001;
     background: #fff;
     display: flex;
     justify-content: center;
@@ -124,7 +317,7 @@ ul{
     padding: 0.166667rem 0;
 
 }
-.cover {
+.mini .cover {
     width: 1.037037rem;
     height: 1.037037rem;
     border-radius: 50%;
@@ -145,13 +338,13 @@ ul{
     transform: rotate3d(0,0,1,360deg);
     }
 }
-.cover img {
+.mini .cover img {
     width:100%;
 }
-.name {
+.mini .name {
     margin-right: 3.148148rem;
 }
-.name h2 {
+.mini .name h2 {
     font-size: .277778rem;
     color:#333232;
     margin-bottom: .046296rem;
@@ -159,66 +352,66 @@ ul{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.name p {
+.mini .name p {
     margin:0;
     font-size: .240741rem;
     color: #808080;
 }
-.manu {
+.mini .manu {
     display: flex;
     align-items: center;
 }
-.playandpause {
+.mini .icon-bofang,.mini .icon-zanting {
     font-size: .740741rem;
     color:#4d4d4d;
     margin-right: .592593rem;
 }
-.icon-menu {
+.mini .icon-menu {
     font-size: .537037rem;
     color:#4d4d4d;
 }
-.el-icon-refresh-right, .el-icon-folder-add,.el-icon-delet{
+.mini .el-icon-refresh-right, .el-icon-folder-add,.el-icon-delet{
     font-size: .444444rem;
     color:#999;
     margin-right: .203704rem;
 }
-.title {
+.mini .title {
   padding: 0.5rem 0.277778rem 0.462963rem 0.277778rem;
   border-bottom: 1px solid #e6e6e6;
   display: flex;
   justify-content: space-between;
 }
-.coll {
+.mini .coll {
    padding-right: .425926rem;     
    border-right: 1px solid #e6e6e6;
    margin-right: .277778rem;
 }
-.playlist>li {
+.mini .playlist>li {
     display: flex;
     justify-content: space-between;
     align-items:center;
     margin-bottom: .907407rem;
 }
-.active {
+.mini .active {
     color:red;
 }
-.song-info {
+.mini .song-info {
     display: flex;
     justify-content: center;
 }
-.song-info .icon-laba {
+.mini .song-info .icon-laba {
     font-size: .37037rem;
     margin-right: .185185rem;
 }
-.song-info .song-name {
+.mini .song-info .song-name {
     font-size: .314815rem;
 
 }
-.song-info .artists {
+.mini .song-info .artists {
     font-size: .277778rem;
     
 }
-.origin {
+.mini .origin {
     display: block;
     width: 1.574074rem;
     height: .481481rem;
@@ -228,7 +421,7 @@ ul{
     border-radius: .277778rem;
     margin-right: .62963rem;
 }
-.icon-delete {
+.mini .icon-delete {
     font-size:.333333rem;
     color: #b3b3b3;
 }

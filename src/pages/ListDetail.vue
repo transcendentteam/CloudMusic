@@ -47,7 +47,7 @@
                         
                         <ul class="list-content songbox">
                             <li class="list-item song"
-                                v-for="item,i in listsong" :key="item.id" @click="add(item)" >
+                                v-for="item,i in listsong" :key="item.id" @click="add(item);playingstate()" >
                                 <div class="info">
                                     <span>{{i+1}}</span>
                                     <h1>{{item.name}}</h1>
@@ -141,6 +141,9 @@ export default {
         console.log('上拉加载')
         this.getData()
         
+      },
+      playingstate(){
+            this.$store.state.playing = true;
       }
         
     },

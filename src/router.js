@@ -9,7 +9,7 @@ import Video from "./pages/Video.vue";
 import Square from "./pages/Square";
 import Dynamic from "./pages/Dynamic";
 
-import Play from "./pages/Play.vue";
+// import Play from "./pages/Play.vue";
 import List from "./pages/List.vue"
 import ListDetail from "./pages/ListDetail.vue"
 
@@ -32,7 +32,7 @@ const router = new VueRouter({
         {path:"/discover/list",component:List},
         {path:"/discover/list/detail",component:ListDetail},
 
-        {path:"/play",component:Play}
+        // {path:"/play",component:Play}
     ]
 })
 

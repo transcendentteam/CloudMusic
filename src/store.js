@@ -2,6 +2,8 @@ import Vue from "vue"
 import Vuex from 'vuex';
 Vue.use(Vuex)
 
+import {playMode} from "./js/config"
+
 // function storeLocalStore (state) {
 //     window.localStorage.setItem("userMsg",JSON.stringify(state));
 // }
@@ -13,28 +15,25 @@ const store = new Vuex.Store({
         cds:[],
         mvs:[],
         dailysongs:[],
-        play:[{
-            "id": 34916664,
-            "album":{"blurPicUrl": "http://p2.music.126.net/mmDtqraSkaf8YEx9BfkCdQ==/3355709488826555.jpg"},
-            "name":"Time Zone",
-            "artists":[{"name":"周笔畅"},{"name":"Epik High"}]
-            
-        }],
+        play:[],
         playnow:{
-            "id": 34916664,
-            "album":{"blurPicUrl": "http://p2.music.126.net/mmDtqraSkaf8YEx9BfkCdQ==/3355709488826555.jpg"},
-            "name":"Time Zone",
-            "artists":[{"name":"周笔畅"},{"name":"Epik High"}],
-            "bMusic":{"playTime":283000}
-            
+            "id": null,
+            "album":{"blurPicUrl": ""},
+            "name":"",
+            "artists":[{"name":""},{"name":""}]
         },
         lists:[],
         animationShow:"paused",
-        css: "playandpause iconfont icon-bofang",
         listdetail:{},
         listuser:{},
         listsong:[],
-        isLoading:true
+        isLoading:true,
+        playing:false,
+        fullScreen:false,
+        playlist:[],
+        sequenceList:[],
+        mode:playMode.sequence,
+        currentIndex:-1
 
     },
     mutations:{
@@ -99,14 +98,16 @@ const store = new Vuex.Store({
             //查看添加的歌曲
             console.log(song);
             let bool = true;
-            for(var i=0;i<state.play.length;i++){
-                if((state.play)[i].id == song.id){
+            for(var i=0;i<state.playlist.length;i++){
+                if((state.playlist)[i].id == song.id){
                     bool = false
                 }
             }
             if(bool){
-                state.play.push(song);
+                state.playlist.push(song);
             }
+            console.log(1);
+            console.log(state.playlist.length)
         },
         playaudio(state){
             if(state.animationShow=="running"){
@@ -135,7 +136,7 @@ const store = new Vuex.Store({
         getlistsong(state,song){
             state.isLoading = false;
             state.listsong=song;
-        }
+        },
         
     },
     actions:{
@@ -223,8 +224,6 @@ const store = new Vuex.Store({
                 store.commit("getrecmv",res.data.data)
             })
         },
-        
-
        
     },
     getters:{
@@ -243,10 +242,10 @@ const store = new Vuex.Store({
         },
         getplayartists(state){
             let arr1=[];
-            for (var i=0;i<state.play.length;i++){
+            for (var i=0;i<state.playlist.length;i++){
                 let arr2=[];
-                for(var j=0;j<state.play[i].artists.length;j++){
-                    arr2.push(state.play[i].artists[j].name);
+                for(var j=0;j<state.playlist[i].artists.length;j++){
+                    arr2.push(state.playlist[i].artists[j].name);
                 }
                 arr1.push(arr2);
             }

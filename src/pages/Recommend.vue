@@ -20,7 +20,7 @@
             <div class="sonbox">
                 <div class="song" v-for="s,i in dailysongs" :key="i">
                     <img :src=s.album.blurPicUrl>
-                    <div class="info" @click="add(s);">
+                    <div class="info" @click="add(s);playingstate()">
                         <h2>{{s.name}}</h2>
                         <!-- 给歌曲中有多个歌手的，在歌手中间加"/" -->
                         <p><span>{{getartists[i].join("/")}}</span>-{{s.name}}</p>
@@ -55,6 +55,9 @@ export default {
         back(){
             this.$router.push({path:"/discover"});
         },
+        playingstate(){
+            this.$store.state.playing = true;
+        }
         
     },
     mounted() {
@@ -65,7 +68,7 @@ export default {
         
     },
     computed: {
-        ...mapState(["dailysongs","css","animationShow"]),
+        ...mapState(["dailysongs","playing"]),
         ...mapGetters(["getartists"])
     },
     filters:{
