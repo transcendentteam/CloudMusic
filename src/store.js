@@ -16,14 +16,7 @@ const store = new Vuex.Store({
         mvs:[],
         dailysongs:[],
         play:[],
-        playnow:{
-            "id": null,
-            "album":{"blurPicUrl": ""},
-            "name":"",
-            "artists":[{"name":""},{"name":""}]
-        },
         lists:[],
-        animationShow:"paused",
         listdetail:{},
         listuser:{},
         listsong:[],
@@ -89,12 +82,10 @@ const store = new Vuex.Store({
         getdailysongs(state,recommend){
             state.dailysongs=recommend;
         },
-        add(state,song){
+        add(state,song,songs){
             // state.animationShow="running"
             // console.log(song);
             //设置一个Bool,循环遍历play数组，如果过找到了与添加歌曲Id相同的歌曲，就不加入播放列表数组，即play
-            state.playnow={};
-            state.playnow=song;
             //查看添加的歌曲
             console.log(song);
             let bool = true;
@@ -104,10 +95,11 @@ const store = new Vuex.Store({
                 }
             }
             if(bool){
-                state.playlist.push(song);
+                state.playlist.unshift(song);
             }
-            console.log(1);
-            console.log(state.playlist.length)
+            state.currentIndex=0
+            // console.log(1);
+            // console.log(state.playlist.length)
         },
         playaudio(state){
             if(state.animationShow=="running"){
@@ -115,14 +107,6 @@ const store = new Vuex.Store({
             }else{
                 state.animationShow="running"
             }
-        },
-        listplay(state,song){
-            // state.animationShow="running"
-            console.log(song);
-            //设置一个Bool,循环遍历play数组，如果过找到了与添加歌曲Id相同的歌曲，就不加入播放列表数组，即play
-            state.playnow={}
-            state.playnow=song;
-            
         },
         getlist(state,list){
             state.lists=list;
@@ -137,7 +121,9 @@ const store = new Vuex.Store({
             state.isLoading = false;
             state.listsong=song;
         },
-        
+        setCurrentIndex(state,index){
+            state.currentIndex = index
+        }
     },
     actions:{
         getdailysongs(store){
@@ -252,11 +238,28 @@ const store = new Vuex.Store({
             // console.log(arr1);
             return arr1
         },
+        currentSong(state){
+            if(state.currentIndex === -1){
+                return {
+                    "id": null,
+                    "album":{"blurPicUrl": ""},
+                    "name":"",
+                    "artists":[{"name":""},{"name":""}]
+                }
+            }else {
+                return state.playlist[state.currentIndex]
+            }
+        }, 
         getmusicurl(state){
-            return "https://music.163.com/song/media/outer/url?id="+state.playnow.id+".mp3"
+            if(state.currentIndex == -1){
+                //最开始没有歌的时候
+                return "https://music.163.com/song/media/outer/url?id=.mp3"
+            }else {
+                return "https://music.163.com/song/media/outer/url?id="+state.playlist[state.currentIndex].id+".mp3"
+
+            }
 
         },
-        
     }
 })
 

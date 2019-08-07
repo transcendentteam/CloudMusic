@@ -211,7 +211,6 @@ ul {
 }
 .info {
     display: flex;
-    justify-content: space-between;
     margin-bottom: .703704rem;
     padding: 0 0.574074rem 0 0.444444rem;
 

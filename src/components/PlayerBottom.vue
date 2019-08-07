@@ -1,60 +1,63 @@
 <template>
     <div class="player"  v-show="playlist.length>0">
-        <div class="normal" v-show="fullScreen">
-            <div class="play" 
-                :style="{background:'url('+playnow.album.blurPicUrl+') center top'}">
-            </div>
+        <transition name="normal">
+            <div class="normal" v-show="fullScreen">
+                <div class="play" 
+                    :style="{background:'url('+currentSong.album.blurPicUrl+') center top'}">
+                </div>
 
-            <div class="gai">
-                <!-- 头部 -->
-                <div class="title">
-                    <div class="left">
-                        <span class="iconfont icon-arrowleft" @click="back"></span>
-                        <div class="info">
-                            <h1>{{playnow.name}}</h1>
-                            <p>{{playnow.artists | atrFormat }}<span class="iconfont icon-iconfontyoujiantou-copy"></span></p>
+                <div class="gai">
+                    <!-- 头部 -->
+                    <div class="title">
+                        <div class="left">
+                            <span class="iconfont icon-arrowleft" @click="back"></span>
+                            <div class="info">
+                                <h1>{{currentSong.name}}</h1>
+                                <p>{{currentSong.artists | atrFormat }}<span class="iconfont icon-iconfontyoujiantou-copy"></span></p>
+                            </div>
                         </div>
+                        <span class="iconfont icon-fenxiang"></span>
                     </div>
-                    <span class="iconfont icon-fenxiang"></span>
-                </div>
-                <!-- 封面 -->
-                <div class="cover">
-                    <img :src="playnow.album.blurPicUrl">
-                </div>
-                <!-- 收藏评论 -->
-                <div class="manu">
-                    <span class="iconfont icon-xinaixinfuzhi"></span>
-                    <span class="iconfont icon-xiazai"></span>
-                    <span class="iconfont icon-jingyunyinxiaopt"></span>
-                    <span class="iconfont icon-xiaoxi"></span>
-                    <span class="iconfont icon-gengduosandian"></span>
-                </div>
-                <!-- 播放区 -->
-                <div class="bofang">
-                    <!-- 进度条 -->
-                    <div class="jdt">
-                        <span class="start">
-                        </span><div class="tiao"><span class="dian"></span>
-                        </div><span class="total"></span>
+                    <!-- 封面 -->
+                    <div class="cover" :style="{'animation-play-state':animationShow}">
+                        <img :src="currentSong.album.blurPicUrl">
                     </div>
-                    <!-- 播放暂停 -->
-                    <div class="bofangqu">
-                        <span class="iconfont icon-xunhuan1"></span>
-                        <span class="iconfont icon-shangyige"></span>
-                        <span :class="playIcon" @click="toggleplaying"></span>
-                        <span class="iconfont icon-xiayige"></span>
-                        <span class="iconfont icon-liebiao"></span>
+                    <!-- 收藏评论 -->
+                    <div class="manu">
+                        <span class="iconfont icon-xinaixinfuzhi"></span>
+                        <span class="iconfont icon-xiazai"></span>
+                        <span class="iconfont icon-jingyunyinxiaopt"></span>
+                        <span class="iconfont icon-xiaoxi"></span>
+                        <span class="iconfont icon-gengduosandian"></span>
                     </div>
-                    <audio :src="getmusicurl" ref="au" loop></audio>
+                    <!-- 播放区 -->
+                    <div class="bofang">
+                        <!-- 进度条 -->
+                        <div class="jdt">
+                            <span class="start">
+                            </span><div class="tiao"><span class="dian"></span>
+                            </div><span class="total"></span>
+                        </div>
+                        <!-- 播放暂停 -->
+                        <div class="bofangqu">
+                            <span class="iconfont icon-xunhuan1"></span>
+                            <span @click="prev" class="iconfont icon-shangyige"></span>
+                            <span :class="playIcon" @click="toggleplaying"></span>
+                            <span @click="next" class="iconfont icon-xiayige"></span>
+                            <span class="iconfont icon-liebiao"></span>
+                        </div>
+                        <audio :src="getmusicurl" ref="au" loop></audio>
+                    </div>
                 </div>
             </div>
-        </div>
+        </transition>
+       
         <div class="mini" v-show="!fullScreen">
-            <div class="cover" @click="normalShow">
-                 <img :src=playnow.album.blurPicUrl>
-                 </div>
+            <div class="cover" @click="normalShow" :style="{'animation-play-state':animationShow}">
+                 <img :src=currentSong.album.blurPicUrl>
+            </div>
             <div class="name">
-                <h2>{{playnow.name}}</h2>
+                <h2>{{currentSong.name}}</h2>
                 <p>横滑可以切换上下首哦</p>
             </div>
             <div class="manu">
@@ -84,9 +87,9 @@
                 <span slot="footer" class="dialog-footer">
                     <ul class="playlist">
                         <li v-for="p,i in playlist" :key="p.id" 
-                            @click="listplay(p);active(i)" >
+                            @click="active(i)" >
                             <div :class="[ num == i ? 'active':'song-info']">
-                                <span class="iconfont icon-laba" v-if="[num == i ? true:false]"></span>
+                                <span class="iconfont icon-laba" v-if="num == i ? true:false"></span>
                                 <span class="song-name">{{p.name}}</span>
                                 <span class="artists">-{{getplayartists[i].join("/")}}</span>
                             </div>
@@ -121,6 +124,9 @@ export default {
             this.$nextTick(() => {
                 this.$refs.audio.play()
             })
+            this.$store.state.playing=true;
+
+            this.num = this.$store.state.currentIndex;
         },
         //监听playing的变化
         playing(newPlaying){
@@ -132,7 +138,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(["playaudio","listplay"]),
+        ...mapMutations(["playaudio","listplay","setCurrentIndex","add"]),
         back(){
             this.$store.state.fullScreen = false;
         },
@@ -142,20 +148,45 @@ export default {
            this.$store.state.playing = !this.$store.state.playing;
            console.log(this.$store.state.playing);
         },
+        //控制播放器全屏
         normalShow(){
             this.$store.state.fullScreen = true;
         },
+        //播放列表active
         active(index){
             this.num = index;
+            //点击播放列表的时候,将当前序号传递给currentIndex
+            this.$store.state.currentIndex = index;
+        },
+        next(){
+            // this.$store.state.playing=true;
+            let index = this.$store.state.currentIndex + 1
+            if(index === this.$store.state.playlist.length){
+                index = 0
+            }
+            this.$store.state.currentIndex=index;
+            
+        },
+        prev(){
+            // this.$store.state.playing=true;
+            let index = this.$store.state.currentIndex - 1
+            if(index === -1){
+                index = this.$store.state.playlist.length-1
+            }
+            this.$store.state.currentIndex=index;
         }
         
     },
     computed:{
         ...mapState(["playlist","playnow","fullScreen","playing"]),
-        ...mapGetters(["getmusicurl","getplayartists"]),
+        ...mapGetters(["getmusicurl","getplayartists","currentIndex","currentSong"]),
         //根据playing的状态切换播放图标
         playIcon(){
             return this.$store.state.playing?'iconfont icon-zanting':'iconfont icon-bofang'
+        },
+        //
+        animationShow(){
+            return this.$store.state.playing?'running':'paused'
         }
     },
     mounted() {
@@ -222,7 +253,7 @@ ul{
     font-size: .592593rem;
     margin-right: .5rem;
 }
-.normal .normal .left h1 {
+.normal .left h1 {
     font-size: .37037rem;
 }
 .normal .left p {
@@ -243,6 +274,8 @@ ul{
     overflow:hidden;
     border: 0.138889rem solid #696a66;
     margin: 2.092593rem auto 2.722222rem auto;
+    animation: access 30s infinite linear;
+
 }
 .normal .cover img {
     width: 100%
