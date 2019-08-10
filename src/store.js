@@ -26,7 +26,12 @@ const store = new Vuex.Store({
         playlist:[],
         sequenceList:[],
         mode:playMode.sequence,
-        currentIndex:-1
+        currentIndex:-1,
+        jxblist:[{"coverImgUrl":""}],
+        officiallist:[],
+        recommendlist:[],
+        globallist:[],
+        morelist:[]
 
     },
     mutations:{
@@ -82,24 +87,21 @@ const store = new Vuex.Store({
         getdailysongs(state,recommend){
             state.dailysongs=recommend;
         },
-        add(state,song,songs){
+        add(state,song){
             // state.animationShow="running"
             // console.log(song);
             //设置一个Bool,循环遍历play数组，如果过找到了与添加歌曲Id相同的歌曲，就不加入播放列表数组，即play
             //查看添加的歌曲
-            console.log(song);
-            let bool = true;
-            for(var i=0;i<state.playlist.length;i++){
-                if((state.playlist)[i].id == song.id){
-                    bool = false
-                }
-            }
-            if(bool){
+            // console.log(song);
+            let index = state.playlist.indexOf(song);
+            if (index == -1){
                 state.playlist.unshift(song);
+                state.currentIndex=0
+
+            }else {
+                state.currentIndex=index
             }
-            state.currentIndex=0
-            // console.log(1);
-            // console.log(state.playlist.length)
+            
         },
         playaudio(state){
             if(state.animationShow=="running"){
@@ -123,6 +125,21 @@ const store = new Vuex.Store({
         },
         setCurrentIndex(state,index){
             state.currentIndex = index
+        },
+        playall(state,songs){
+            // state.playlist = state.playlist.concat(songs)
+            state.playlist.unshift(...songs)
+            state.playlist = Array.from(new Set([...state.playlist]))
+            state.currentIndex = 0;
+        },
+        getboard(state,list){
+            // console.log(list)
+            state.jxblist=list.slice(4,5)
+            state.officiallist=list.slice(0,4)
+            state.recommendlist = list.slice(5,11)
+            state.globallist = list.slice(11,17)
+            state.morelist = list.slice(17)
+            // console.log(state.officiallist)
         }
     },
     actions:{
@@ -210,6 +227,14 @@ const store = new Vuex.Store({
                 store.commit("getrecmv",res.data.data)
             })
         },
+        //排行榜
+        getboard(store) {
+            Vue.axios.get("http://120.27.243.6:3000/toplist/detail")
+            .then(res => {
+                // console.log(res);
+                store.commit('getboard',res.data.list)
+            })
+        }
        
     },
     getters:{
@@ -244,7 +269,8 @@ const store = new Vuex.Store({
                     "id": null,
                     "album":{"blurPicUrl": ""},
                     "name":"",
-                    "artists":[{"name":""},{"name":""}]
+                    "artists":[{"name":""},{"name":""}],
+                    "bMusic":{"playTime":null}
                 }
             }else {
                 return state.playlist[state.currentIndex]

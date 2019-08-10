@@ -29,7 +29,7 @@
                     <div v-for="item in listsong" :key="item.id" class="song">{{item.name}}</div>
                 </div> -->
                 <div class="all">
-                    <div class="left">
+                    <div class="left"  @click="playall(listsong)">
                         <span class="iconfont icon-bofang"></span>
                         <h1>播放全部</h1><span class="all-number">共({{listsong.length}})首</span>
                     </div>
@@ -122,7 +122,7 @@ export default {
             this.$router.go(-1);
         },
         ...mapActions(["getuser"]),
-        ...mapMutations(["add"]),
+        ...mapMutations(["add","playall"]),
         // 滚动到页面顶部
       scrollTo() {
         this.$refs.scroll.scrollTo(this.scrollToX, this.scrollToY, this.scrollToTime)

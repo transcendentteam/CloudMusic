@@ -13,6 +13,7 @@ import Dynamic from "./pages/Dynamic";
 import List from "./pages/List.vue"
 import ListDetail from "./pages/ListDetail.vue"
 
+import Board from "./pages/Board"
 const router = new VueRouter({
     routes:[
         {path:"/",redirect:'/discover'},
@@ -31,7 +32,7 @@ const router = new VueRouter({
         {path:"/discover/recommend",component:Recommend},
         {path:"/discover/list",component:List},
         {path:"/discover/list/detail",component:ListDetail},
-
+        {path:"/discover/board",component:Board}
         // {path:"/play",component:Play}
     ]
 })

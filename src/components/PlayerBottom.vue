@@ -34,9 +34,12 @@
                     <div class="bofang">
                         <!-- 进度条 -->
                         <div class="jdt">
-                            <span class="start">
-                            </span><div class="tiao"><span class="dian"></span>
-                            </div><span class="total"></span>
+                            <span class="start">{{currentTime | timeFormat}}</span>
+                            <div class="tiao" ref="progressBar">
+                                <span class="dian" ref="progressBtn"></span>
+                                <div class="move-bar" ref="progress"></div>
+                            </div>
+                            <span class="total">{{currentSong.bMusic.playTime | format}}</span>
                         </div>
                         <!-- 播放暂停 -->
                         <div class="bofangqu">
@@ -53,12 +56,14 @@
         </transition>
        
         <div class="mini" v-show="!fullScreen">
-            <div class="cover" @click="normalShow" :style="{'animation-play-state':animationShow}">
-                 <img :src=currentSong.album.blurPicUrl>
-            </div>
-            <div class="name">
-                <h2>{{currentSong.name}}</h2>
-                <p>横滑可以切换上下首哦</p>
+            <div class="left">
+                <div class="cover" @click="normalShow" :style="{'animation-play-state':animationShow}">
+                    <img :src=currentSong.album.blurPicUrl>
+                </div>
+                <div class="name">
+                    <h2>{{currentSong.name}}</h2>
+                    <p>横滑可以切换上下首哦</p>
+                </div>
             </div>
             <div class="manu">
                 <span @click="toggleplaying" :class="playIcon"></span>
@@ -94,7 +99,7 @@
                                 <span class="artists">-{{getplayartists[i].join("/")}}</span>
                             </div>
                             <div class="manu">
-                                <span class="origin">播放来源</span>
+                                <span class="origin" v-if="num == i ? true:false">播放来源</span>
                                 <span class="iconfont icon-delete"></span>
                             </div>
                         </li>
@@ -103,7 +108,7 @@
             </el-dialog>
         </div>
         
-        <audio :src=getmusicurl ref="audio"></audio>
+        <audio :src="getmusicurl" ref="audio" @timeupdate="updateTime" @ended="end"></audio>
 
     </div>
     
@@ -111,11 +116,15 @@
 
 <script>
 import {mapState,mapGetters,mapMutations} from "vuex"
+
+const progressBtnWidth = 16
+
 export default {
     data() {
         return {
             centerDialogVisible: false,
-            num:0
+            num:0,
+            currentTime:0,
         }
     },
     watch: {
@@ -135,6 +144,20 @@ export default {
                 const audio = this.$refs.audio
                 newPlaying?audio.play():audio.pause()
             })
+        },
+        //监听歌曲播放百分比
+        percent(newPercent) {
+            // console.log(newPercent)
+            if(newPercent >= 0) {
+                //进度条的总长度
+                const barwidth = this.$refs.progressBar.clientWidth - progressBtnWidth
+                //小球的偏移
+                const offsetWidth = newPercent * barwidth
+                //变化的进度条的宽度
+                this.$refs.progress.style.width = `${offsetWidth}px`
+                //小点的left值
+                this.$refs.progressBtn.style.left = `${offsetWidth}px`
+            }
         }
     },
     methods: {
@@ -143,10 +166,10 @@ export default {
             this.$store.state.fullScreen = false;
         },
         toggleplaying(){
-           console.log(this.$store.state.playing);
+        //    console.log(this.$store.state.playing);
             
            this.$store.state.playing = !this.$store.state.playing;
-           console.log(this.$store.state.playing);
+        //    console.log(this.$store.state.playing);
         },
         //控制播放器全屏
         normalShow(){
@@ -174,12 +197,35 @@ export default {
                 index = this.$store.state.playlist.length-1
             }
             this.$store.state.currentIndex=index;
+        },
+        //audio的timeupdate事件
+        updateTime(e) {
+            this.currentTime = e.target.currentTime;
+            
+        },
+        //当前歌曲放完以后 序号+1
+        end(){
+            if(this.$store.state.currentIndex<this.$store.state.playlist.length){
+                this.$store.state.currentIndex ++
+            }else {
+                this.$store.state.playing = false;
+            }
+
         }
-        
     },
     computed:{
-        ...mapState(["playlist","playnow","fullScreen","playing"]),
-        ...mapGetters(["getmusicurl","getplayartists","currentIndex","currentSong"]),
+        ...mapState([
+            "playlist",
+            "playnow",
+            "fullScreen",
+            "playing"]
+        ),
+        ...mapGetters([
+            "getmusicurl",
+            "getplayartists",
+            "currentIndex",
+            "currentSong"
+        ]),
         //根据playing的状态切换播放图标
         playIcon(){
             return this.$store.state.playing?'iconfont icon-zanting':'iconfont icon-bofang'
@@ -187,11 +233,30 @@ export default {
         //
         animationShow(){
             return this.$store.state.playing?'running':'paused'
+        },
+        percent() {
+            return this.currentTime / (this.$store.getters.currentSong.bMusic.playTime/1000)
         }
     },
     mounted() {
     },
     filters:{
+        //开始时间格式化
+        timeFormat(des) {
+            //向下取整
+            des = des | 0
+            let minute = des / 60  | 0
+            let second = des % 60
+            if(minute < 10){
+                minute = '0'+minute
+            }
+            if(second < 10){
+                second = '0'+second
+            }
+
+            return  `${minute}:${second}`
+        },
+        
         atrFormat(des){
             let arr=[]
             for(var i in des){
@@ -200,11 +265,19 @@ export default {
             let str = arr.join("/")
             return str
         },
+        //总时长格式化
         format(des){
-            let h = parseInt(des/60);
-            let s = parseInt(des-h*60);
+            des = des/1000 | 0
+            let minute = des / 60  | 0
+            let second = des % 60
+            if(minute < 10){
+                minute = '0'+minute
+            }
+            if(second < 10){
+                second = '0'+second
+            }
 
-            return h+":"+s
+            return  `${minute}:${second}`
         }
     }
 };
@@ -254,6 +327,9 @@ ul{
     margin-right: .5rem;
 }
 .normal .left h1 {
+    width: 7rem;
+    overflow: hidden;
+    white-space: nowrap;
     font-size: .37037rem;
 }
 .normal .left p {
@@ -301,17 +377,24 @@ ul{
     width: 7.203704rem;
     height: 4px;
     background: #696968;
-    margin: 0 auto;
     border-radius: 10px;
 }
 .normal .dian {
-    width: 8px;
-    height: 8px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: #fff;
     position: absolute;
     left: 0;
-    top: -2px;
+    top: -6px;
+}
+.normal .move-bar {
+    height: 4px;
+    background: orange;
+    position: absolute;
+    left: 0;
+
+
 }
 .normal .total {
     color: #62605b;
@@ -345,9 +428,15 @@ ul{
     z-index:3001;
     background: #fff;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 0.166667rem 0;
+    padding: 0.166667rem 0.2rem;
+    box-sizing: border-box;
+
+}
+.mini .left {
+    display: flex;
+    justify-content: left;
 
 }
 .mini .cover {
@@ -357,7 +446,6 @@ ul{
     overflow: hidden;
     align-items: center;
     margin-right: .185185rem;
-
     transform: rotate3d(0,0,0,0deg);
     animation: access 30s infinite linear;
 
@@ -374,16 +462,14 @@ ul{
 .mini .cover img {
     width:100%;
 }
-.mini .name {
-    margin-right: 3.148148rem;
-}
+
 .mini .name h2 {
+    width: 6.481481rem;
     font-size: .277778rem;
     color:#333232;
     margin-bottom: .046296rem;
-    overflow: hidden;
+    overflow-x: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis;
 }
 .mini .name p {
     margin:0;
@@ -397,7 +483,7 @@ ul{
 .mini .icon-bofang,.mini .icon-zanting {
     font-size: .740741rem;
     color:#4d4d4d;
-    margin-right: .592593rem;
+    margin-right: .5rem;
 }
 .mini .icon-menu {
     font-size: .537037rem;
@@ -427,10 +513,19 @@ ul{
 }
 .mini .active {
     color:red;
+    width:6.944444rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: left;
 }
 .mini .song-info {
+    width:6.944444rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     display: flex;
-    justify-content: center;
+    justify-content: left;
 }
 .mini .song-info .icon-laba {
     font-size: .37037rem;
@@ -438,6 +533,7 @@ ul{
 }
 .mini .song-info .song-name {
     font-size: .314815rem;
+    white-space: nowrap;
 
 }
 .mini .song-info .artists {

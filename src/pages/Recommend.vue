@@ -14,7 +14,7 @@
         </div>
         <div class="recommend">
             <div class="playall">
-                <h1><span class="iconfont icon-bofang"></span>播放全部</h1>
+                <h1 @click="playall(dailysongs)"><span class="iconfont icon-bofang"></span>播放全部</h1>
                 <h3><span class="iconfont icon-duoxuan"></span>多选</h3>
             </div>    
             <div class="sonbox">
@@ -46,7 +46,7 @@ export default {
     },
     methods: {
         ...mapActions(["getdailysongs"]),
-        ...mapMutations(["add"]),
+        ...mapMutations(["add","playall"]),
         getdate(){
             let obj=new Date();
             this.Month=obj.getMonth()+1;
@@ -57,7 +57,8 @@ export default {
         },
         playingstate(){
             this.$store.state.playing = true;
-        }
+        },
+        //播放全部
         
     },
     mounted() {
