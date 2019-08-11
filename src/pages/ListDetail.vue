@@ -133,12 +133,12 @@ export default {
       },
       onPullingDown() {
         // 模拟下拉刷新
-        console.log('下拉刷新')
+        // console.log('下拉刷新')
         this.getData()
       },
       onPullingUp() {
         // 模拟上拉 加载更多数据
-        console.log('上拉加载')
+        // console.log('上拉加载')
         this.getData()
         
       },

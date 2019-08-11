@@ -31,7 +31,11 @@ const store = new Vuex.Store({
         officiallist:[],
         recommendlist:[],
         globallist:[],
-        morelist:[]
+        morelist:[],
+        createnum:0,
+        collectnum:0,
+        createlist:[],
+        collectlist:[]
 
     },
     mutations:{
@@ -140,6 +144,15 @@ const store = new Vuex.Store({
             state.globallist = list.slice(11,17)
             state.morelist = list.slice(17)
             // console.log(state.officiallist)
+        },
+        setsubcount(state,count){
+            state.createnum = count.createdPlaylistCount;
+            state.collectnum = count.subPlaylistCount
+        },
+        setuserlist(state,list){
+            state.createlist = list.slice(0,21);
+            state.collectlist = list.slice(21);
+            // console.log(state.collectlist)
         }
     },
     actions:{
@@ -233,6 +246,26 @@ const store = new Vuex.Store({
             .then(res => {
                 // console.log(res);
                 store.commit('getboard',res.data.list)
+            })
+        },
+        //获取用户信息 , 歌单，收藏，mv, dj 数量
+        getsubcount(store) {
+            Vue.axios({url:"http://120.27.243.6:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
+           .then(res =>{
+                Vue.axios({url:"http://120.27.243.6:3000/user/subcount",withCredentials:true})
+                .then(res =>{
+                    store.commit("setsubcount",res.data)
+                })
+            })
+        },
+        //获取用户歌单
+        getuserlist(store) {
+            Vue.axios({url:"http://120.27.243.6:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
+           .then(res =>{
+                Vue.axios({url:"http://120.27.243.6:3000/user/playlist?uid=78801737",withCredentials:true})
+                .then(res =>{
+                    store.commit("setuserlist",res.data.playlist)
+                })
             })
         }
        

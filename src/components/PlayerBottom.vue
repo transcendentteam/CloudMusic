@@ -19,8 +19,12 @@
                         <span class="iconfont icon-fenxiang"></span>
                     </div>
                     <!-- 封面 -->
-                    <div class="cover" :style="{'animation-play-state':animationShow}">
+                    <div class="cover" :style="{'animation-play-state':animationShow}" v-show="isShow">
                         <img :src="currentSong.album.blurPicUrl">
+                    </div>
+                    <!-- 歌词 -->
+                    <div class="lyric" v-show="!isShow">
+                        <h1>歌词歌词歌词</h1>
                     </div>
                     <!-- 收藏评论 -->
                     <div class="manu">
@@ -49,7 +53,6 @@
                             <span @click="next" class="iconfont icon-xiayige"></span>
                             <span class="iconfont icon-liebiao"></span>
                         </div>
-                        <audio :src="getmusicurl" ref="au" loop></audio>
                     </div>
                 </div>
             </div>
@@ -125,6 +128,7 @@ export default {
             centerDialogVisible: false,
             num:0,
             currentTime:0,
+            isShow:true
         }
     },
     watch: {
