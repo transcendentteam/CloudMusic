@@ -23,6 +23,9 @@
 </template>
 
 <script>
+import Vue from "vue"
+import Vuex from 'vuex';
+Vue.use(Vuex)
 export default {
     data(){
         return{
@@ -30,18 +33,17 @@ export default {
         }
     },
     mounted() {
-        this.axios({url:"http://120.27.243.6:3000/video/group?id=9104",withCredentials:true})
-                .then(res =>{
-                    console.log(res.data.datas);
-                    // var arr=res.data.event;
-                    this.video=res.data.datas;
-                    
-                    
-                })
-        // this.axios.get("http://120.27.243.6:3000/video/group?id=9104").then((res) => {
-        //     // console.log(response.data.playlists)
-        //     this.video=res.data.datas;
-        // })
+        // Vue.axios.get(`http://120.27.243.6:3000/video/group?id=9104`)
+        //     .then(res =>{
+        //         // console.log(res.data.profile);
+        //         // store.commit("getuser",res.data.profile)
+        //         console.log(res.data.datas)
+        //         this.video=res.data.datas;
+        //     })
+        this.axios.get("http://120.27.243.6:3000/video/group?id=9104").then((res) => {
+            // console.log(response.data.playlists)
+            this.video=res.data.datas;
+        })
     },
     
 };
