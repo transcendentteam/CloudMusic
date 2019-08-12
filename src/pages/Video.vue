@@ -33,17 +33,20 @@ export default {
         }
     },
     mounted() {
-        // Vue.axios.get(`http://120.27.243.6:3000/video/group?id=9104`)
-        //     .then(res =>{
-        //         // console.log(res.data.profile);
-        //         // store.commit("getuser",res.data.profile)
-        //         console.log(res.data.datas)
-        //         this.video=res.data.datas;
-        //     })
-        this.axios.get("http://120.27.243.6:3000/video/group?id=9104").then((res) => {
-            // console.log(response.data.playlists)
-            this.video=res.data.datas;
-        })
+
+        // this.axios.get("http://120.27.243.6:3000/video/group?id=9104").then((res) => {
+        //     // console.log(response.data.playlists)
+        //     this.video=res.data.datas;
+        // })
+
+        this.axios({url:"http://120.27.243.6:3000/login/cellphone?phone=13118306468&password=smj15284753294"})
+           .then(res =>{
+                this.axios({url:"http://120.27.243.6:3000/video/group?id=9104",withCredentials:true})
+                .then(res =>{
+                    console.log(res.data.playlists)
+                    this.video=res.data.datas;
+                })
+            })
     },
     
 };
@@ -73,7 +76,8 @@ export default {
         vertical-align: middle;
     }
     .video .share p{
-        font: .388889rem/1.231481rem "";
+        font-size: .388889rem;
+        line-height: 1.231481rem;
         margin: 0;
     }
     .video .user{

@@ -73,9 +73,6 @@ export default {
     margin: 0;
     padding: 0;
     }
-    .dynamic{
-        
-    }
     .dynamic .information{
         padding: 0 .435185rem;
         margin-top: .592593rem;
@@ -89,7 +86,8 @@ export default {
     }
     .dynamic h1>span{
         display: inline-block;
-        font: .287037rem/1 "";
+        font-size: .287037rem;
+        font-weight: 1;
         color:#fff;
         padding: 0 .277778rem;
         background: #ff3839;
@@ -99,7 +97,8 @@ export default {
         line-height: .648148rem;
     }
     .dynamic h1>span i{
-        font: .287037rem/1 "";
+        font-size: .287037rem;
+        font-weight: 1;
     }
     .dynamic h1 .user{
         display: flex;
@@ -117,7 +116,8 @@ export default {
         list-style: none;
     }
     .dynamic h1 .user ul li{
-        font: .37037rem/.592593rem "";
+        font-size: .37037rem;
+        font-weight: 1;
         color:#527dad;
     }
     .dynamic h1 .user ul li span{
@@ -127,14 +127,16 @@ export default {
     }
     .dynamic h1 .user ul li:nth-of-type(2){
         color:#9c9a9c;
-        font: .259259rem/.407407rem "";
+        font-size: .259259rem;
+        font-weight: 1;
     }
     .dynamic .img{
         box-sizing: border-box;
         padding-left: 1.240741rem;
     }
     .dynamic .img>p{
-        font: .37037rem/.648148rem "";
+        font-size: .37037rem;
+        font-weight: 1;
         color: #000;
         
     }
@@ -172,10 +174,12 @@ export default {
     }
     .dynamic .img footer div span .iconfont{
         color:#636563;
-        font: .716667rem/1 "";
+        font-size: .716667rem;
+        font-weight: 1;
     }
     .dynamic .img footer .iconfont{
-        font: .433333rem/1 "";
+        font-size: .433333rem;
+        font-weight: 1;
         color:#b5b2b5;
     }
 </style>
